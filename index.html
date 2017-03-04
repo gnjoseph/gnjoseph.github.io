@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>mapTest Page</title>
+<p>Hello World! I am hosted with github pages</p>
+</head>
+
+<body>
+<p>creating structure of webpage</p>
+<script language="javascript">
+alert("Hi there, and welcome.")
+</script>
+<!-- code added from src: http://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk#loadMapAsync+HTML  to draw map-->
+ <div id='printoutPanel'></div>
+        
+        <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+        <script type='text/javascript'>
+                var map;
+                function loadMapScenario() {
+                    map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                        credentials: 'Your Bing Maps Key'
+                    });
+                }                   
+        </script>
+        <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?branch=experimental&callback=loadMapScenario' async defer></script>
+    
+
+
+</body>
+
+</html>
