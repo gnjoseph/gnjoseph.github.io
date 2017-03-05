@@ -6,20 +6,54 @@
 alert("Hi there, and welcome. Testing JavaScript alert function")
 </script>
 </head>
-<body>
-
-<!-- code added from src: http://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk#loadMapAsync+HTML  to draw map-->
- <div id='printoutPanel'></div>
-        
-        <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+<body style="background-color: cream" >
+<p>
+<ul style="color: red" >
+<h2>Goals of this page </h2>
+<li>Grabbing data from stats can website</li>
+	<ol>
+	<li>got it loading a geojson file data</>
+	<li style="color: black">facing issues getting it to load city of calgary geojson data</li>
+	<li>got it loading heatmap data </>
+	</ol>
+<li>Geocoding data into map</li>
+	<ol>
+	<li>let's try to make it give you geojson data</>
+	</ol>
+<li>Analyzing data</li>
+<li>Report generation</li>
+</ul>
+</p>
+<!--  Credentials: 'AgHCf6GjRS2miEI5NZkldXoe9HdPKWKOqsG6U34CcxLzXRuQP9iW9n0Hi_Xnqy_n' code added from src: http://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk#loadMapAsync+HTML  to draw map-->
+ <div id='myMap' style='width: 100vw; height: 100vh;'></div>
         <script type='text/javascript'>
-                var map;
-                function loadMapScenario() {
-                    map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
-                        credentials: 'AgHCf6GjRS2miEI5NZkldXoe9HdPKWKOqsG6U34CcxLzXRuQP9iW9n0Hi_Xnqy_n'
+            function loadMapScenario() {
+                var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                    credentials: 'AgHCf6GjRS2miEI5NZkldXoe9HdPKWKOqsG6U34CcxLzXRuQP9iW9n0Hi_Xnqy_n',
+                    center: new Microsoft.Maps.Location(51, -114),
+                    zoom: 5
+                });
+                
+                myMap = map;
+                Microsoft.Maps.loadModule('Microsoft.Maps.GeoJson', function () {
+                    Microsoft.Maps.GeoJson.readFromUrl('http://earthquake.usgs.gov/fdsnws/event/1/query?minmagnitude=3&format=geojson', function (shapes) {
+                        map.entities.push(shapes);
+                    }, 'callback');
+                });
+				
+				//Load the GeoJSON and HeatMap modules
+                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.HeatMap'], function () {
+                    // earthquake data in the past 30 days from usgs.gov
+                    Microsoft.Maps.GeoJson.readFromUrl('http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson', function (shapes) {
+                        var heatMap = new Microsoft.Maps.HeatMapLayer(shapes, { radius: 5 });
+                        map.layers.insert(heatMap);
                     });
-                }                   
+                });
+                
+            }
+			
+			
         </script>
-		<script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?branch=experimental&callback=loadMapScenario' async defer></script>
+        <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?branch=experimental&callback=loadMapScenario' async defer></script>
 </body>
 </html>
