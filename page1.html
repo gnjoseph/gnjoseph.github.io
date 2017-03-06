@@ -55,7 +55,7 @@ alert("Hi there, and welcome. Testing JavaScript alert function")
 				function heatFunction(){
 					Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.HeatMap'], function () {
                     // earthquake data in the past 30 days from usgs.gov
-                    Microsoft.Maps.GeoJson.readFromUrl('http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson', function (shapes) {
+                    Microsoft.Maps.GeoJson.readFromUrl('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson', function (shapes) {
                         var heatMap = new Microsoft.Maps.HeatMapLayer(shapes, { radius: 5 });
                         map.layers.insert(heatMap);
                     });
@@ -65,7 +65,7 @@ alert("Hi there, and welcome. Testing JavaScript alert function")
 				document.getElementById('quake-button').onclick = function(){quakeFunction()};
 				function quakeFunction(){
 					Microsoft.Maps.loadModule('Microsoft.Maps.GeoJson', function () {
-                    Microsoft.Maps.GeoJson.readFromUrl('http://earthquake.usgs.gov/fdsnws/event/1/query?minmagnitude=3&format=geojson', function (shapes) {
+                    Microsoft.Maps.GeoJson.readFromUrl('https://earthquake.usgs.gov/fdsnws/event/1/query?minmagnitude=3&format=geojson', function (shapes) {
                         map.entities.push(shapes);
                     }, 'callback');
                 });
