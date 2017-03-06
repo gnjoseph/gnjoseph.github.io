@@ -3,9 +3,9 @@
 <head>
 <strong><h1>Welcome to bing maps test</h1><strong>
 <em><p>note if you aren't seeing a big honking map, chrome could be locking it, try selecting load unsafe scripts"</p></em>
-<script language="javascript">
+<!--<script language="javascript">
 alert("Hi there, and welcome. Testing JavaScript alert function")
-</script>
+</script>-->
 </head>
 <body style="background-color: cream" >
 <p>
@@ -14,7 +14,7 @@ alert("Hi there, and welcome. Testing JavaScript alert function")
 <li>Grabbing data from stats can website</li>
 	<ol>
 	<li>got it loading a geojson file data</>
-	<li style="color: black">facing issues getting it to load city of calgary geojson data</li>
+	<li style="color: black">facing issues getting it to load city of calgary geojson data: <a href="data.json">Link to geojson data</a></li>
 	<li>got it loading heatmap data </>
 	</ol>
 <li>Geocoding data into map</li>
@@ -26,7 +26,14 @@ alert("Hi there, and welcome. Testing JavaScript alert function")
 </ul>
 </p>
 <!--  Credentials: 'AgHCf6GjRS2miEI5NZkldXoe9HdPKWKOqsG6U34CcxLzXRuQP9iW9n0Hi_Xnqy_n' code added from src: http://www.bing.com/api/maps/sdkrelease/mapcontrol/isdk#loadMapAsync+HTML  to draw map-->
- <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+<button type="button" id='clear-button' >Clear Map</button>
+<button type="button" id='heat-button' >Add heat Map</button>
+<button type="button" id='quake-button' >Recent Earthquakes</button>
+<button type="button" id='pin-button' >Add pushpin</button>
+<button type="button" id='poly-button' >Draw polygons</button>
+<button type="button" id='print-button' >print geodata</button>
+<div id='printoutPanel'></div>
+ <div id='myMap' style='width: 60vw; height: 60vh;'></div>
         <script type='text/javascript'>
             function loadMapScenario() {
                 var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
@@ -36,25 +43,62 @@ alert("Hi there, and welcome. Testing JavaScript alert function")
                 });
                 
                 myMap = map;
-                Microsoft.Maps.loadModule('Microsoft.Maps.GeoJson', function () {
-                    Microsoft.Maps.GeoJson.readFromUrl('http://earthquake.usgs.gov/fdsnws/event/1/query?minmagnitude=3&format=geojson', function (shapes) {
-                        map.entities.push(shapes);
-                    }, 'callback');
-                });
 				
-				//Load the GeoJSON and HeatMap modules
-                Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.HeatMap'], function () {
+				document.getElementById('clear-button').onclick = function(){clearFunction()};
+				function clearFunction(){
+					map.entities.clear();
+					map.layers.clear();		
+					document.getElementById('printoutPanel').innerHTML = '';
+				};
+				
+				document.getElementById('heat-button').onclick = function(){heatFunction()};
+				function heatFunction(){
+					Microsoft.Maps.loadModule(['Microsoft.Maps.GeoJson', 'Microsoft.Maps.HeatMap'], function () {
                     // earthquake data in the past 30 days from usgs.gov
                     Microsoft.Maps.GeoJson.readFromUrl('http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson', function (shapes) {
                         var heatMap = new Microsoft.Maps.HeatMapLayer(shapes, { radius: 5 });
                         map.layers.insert(heatMap);
                     });
                 });
+				};
+				
+				document.getElementById('quake-button').onclick = function(){quakeFunction()};
+				function quakeFunction(){
+					Microsoft.Maps.loadModule('Microsoft.Maps.GeoJson', function () {
+                    Microsoft.Maps.GeoJson.readFromUrl('http://earthquake.usgs.gov/fdsnws/event/1/query?minmagnitude=3&format=geojson', function (shapes) {
+                        map.entities.push(shapes);
+                    }, 'callback');
+                });
+				};
+				
+				document.getElementById('pin-button').onclick = function(){pinFunction()};
+				function pinFunction(){
+					var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), null);
+					map.entities.push(pushpin);
+				};
+				
+				document.getElementById('poly-button').onclick = function(){polyFunction()};
+				function polyFunction(){
+					map.entities.push(Microsoft.Maps.TestDataGenerator.getPolygons(3, map.getBounds(), 5));
+				};
+				
+				document.getElementById('print-button').onclick = function(){printFunction()};
+				function printFunction(){
+					document.getElementById('printoutPanel').innerHTML =
+                    '<b>Map center</b> <br>' + map.getCenter() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Map bounds</b> <br>' + map.getBounds() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Map type id</b> <br>' + map.getMapTypeId() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Map zoom level</b> <br>' + map.getZoom() + '<br>';
+				};
                 
             }
 			
 			
         </script>
+		<script type='text/javascript' src='data.json'></script>
         <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?branch=experimental&callback=loadMapScenario&s=1' async defer></script>
 </body>
 </html>
